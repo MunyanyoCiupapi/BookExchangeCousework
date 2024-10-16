@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework.fxControllers.Main">
+   <children>
+      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Users">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="userListField" layoutX="14.0" layoutY="14.0" onMouseClicked="#loadUserData" prefHeight="339.0" prefWidth="205.0" />
+                        <TextField fx:id="loginField" layoutX="239.0" layoutY="23.0" />
+                        <TextField fx:id="nameField" layoutX="240.0" layoutY="61.0" />
+                        <PasswordField fx:id="pswField" layoutX="240.0" layoutY="106.0" />
+                        <TextField fx:id="surnameField" layoutX="241.0" layoutY="151.0" />
+                        <TextField fx:id="addressField" layoutX="242.0" layoutY="195.0" />
+                        <DatePicker fx:id="bDate" layoutX="229.0" layoutY="276.0" />
+                        <Button layoutX="274.0" layoutY="318.0" mnemonicParsing="false" onAction="#createNewUser" text="Create" />
+                        <RadioButton fx:id="chkClient" layoutX="411.0" layoutY="155.0" mnemonicParsing="false" text="Client" />
+                        <RadioButton fx:id="chkAdmin" layoutX="471.0" layoutY="155.0" mnemonicParsing="false" text="Admin" />
+                        <Button layoutX="359.0" layoutY="318.0" mnemonicParsing="false" text="Update" />
+                        <TextField fx:id="phoneNumField" layoutX="242.0" layoutY="235.0" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Books">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+   </children>
+</AnchorPane>
