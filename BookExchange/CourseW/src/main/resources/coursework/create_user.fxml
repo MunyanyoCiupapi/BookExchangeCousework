@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.RadioButton?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework.fxControllers.Main">
+   <children>
+      <TextField fx:id="newLoginField" layoutX="94.0" layoutY="60.0" promptText="Login" />
+      <TextField fx:id="newNameField" layoutX="331.0" layoutY="60.0" promptText="Name" />
+      <PasswordField fx:id="newPswField" layoutX="94.0" layoutY="120.0" promptText="Password" />
+      <TextField fx:id="newSurnameField" layoutX="331.0" layoutY="120.0" promptText="Surname" />
+      <TextField fx:id="newAddressField" layoutX="101.0" layoutY="224.0" promptText="Address" />
+      <DatePicker fx:id="newBDate" layoutX="319.0" layoutY="226.0" promptText="Birthday Date" />
+      <Button layoutX="193.0" layoutY="345.0" mnemonicParsing="false" onAction="#createNewUser" prefHeight="25.0" prefWidth="174.0" text="Create" />
+      <RadioButton fx:id="newChkClient" layoutX="322.0" layoutY="290.0" mnemonicParsing="false" onAction="#disalbeFields" text="Client" />
+      <RadioButton fx:id="newChkAdmin" layoutX="410.0" layoutY="290.0" mnemonicParsing="false" onAction="#disalbeFields" text="Admin" />
+      <TextField fx:id="newPhoneNumField" layoutX="101.0" layoutY="280.0" promptText="Phone Number" />
+      <Label layoutX="94.0" layoutY="36.0" text="Enter login:" />
+      <Label layoutX="97.0" layoutY="96.0" text="Enter password:" />
+      <Label layoutX="331.0" layoutY="36.0" text="Enter name:" />
+      <Label layoutX="331.0" layoutY="96.0" text="Enter surname:" />
+      <Label layoutX="101.0" layoutY="203.0" text="Enter address:" />
+      <Label layoutX="101.0" layoutY="258.0" text="Enter address:" />
+      <Label layoutX="319.0" layoutY="203.0" text="Enter birthday:" />
+      <Label layoutX="322.0" layoutY="267.0" text="Select which type user will be:" />
+   </children>
+</AnchorPane>
