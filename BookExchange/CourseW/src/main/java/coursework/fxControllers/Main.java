@@ -210,6 +210,7 @@ public class Main implements Initializable {
 
     public void deleteUser(ActionEvent event) {
         hibernate.delete(User.class, selectedUser.getId());
+        showAlert(Alert.AlertType.INFORMATION, "Success", null, "User has been deleted successfully.");
         fillUserList();
     }
 
