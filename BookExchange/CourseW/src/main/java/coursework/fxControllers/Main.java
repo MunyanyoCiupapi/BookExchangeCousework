@@ -1,6 +1,7 @@
 package coursework.fxControllers;
 
 import coursework.StartGUI;
+import coursework.hibenateControllers.CustomHibernate;
 import coursework.hibenateControllers.GenericHibernate;
 import coursework.model.*;
 import jakarta.persistence.EntityManagerFactory;
@@ -11,6 +12,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -63,28 +65,35 @@ public class Main implements Initializable {
     public RadioButton newChkClient;
     @FXML
     public RadioButton newChkAdmin;
+
+    @FXML
+    public TableColumn columnId;
+    @FXML
+    public TableColumn columnName;
+    @FXML
+    public TableColumn columnSurname;
+    @FXML
+    public TableColumn columnUsername;
+    @FXML
+    public TableColumn columnPassword;
     //endregion
 
 
 
-    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("coursework");
+    EntityManagerFactory entityManagerFactory; //= Persistence.createEntityManagerFactory("coursework");
 
-    GenericHibernate hibernate = new GenericHibernate(entityManagerFactory);
+    CustomHibernate hibernate; //= new GenericHibernate(entityManagerFactory);
 
     User selectedUser = null;
 
     private ToggleGroup userTypeGroup;
     @FXML
     private TabPane tabPane;
+    User currentUser = null;
 
 
     public void initialize(URL location, ResourceBundle resources) {
-        if(userListField != null)fillUserList();
 
-        if(newChkClient != null && newChkAdmin != null) {
-            userTypeGroup = new ToggleGroup();
-            userTypeGroup.getToggles().addAll(newChkClient, newChkAdmin);
-        }
     }
 
     private void showAlert(Alert.AlertType type, String title, String headerText, String contentText) {
@@ -95,6 +104,19 @@ public class Main implements Initializable {
         alert.showAndWait();
     }
 
+    public void setData(EntityManagerFactory entityManagerFactory, User user) {
+        this.entityManagerFactory = entityManagerFactory;
+        this.currentUser = user;
+        this.hibernate = new CustomHibernate(entityManagerFactory);
+
+        if(userListField != null)fillUserList();
+
+        if(newChkClient != null && newChkAdmin != null) {
+            userTypeGroup = new ToggleGroup();
+            userTypeGroup.getToggles().addAll(newChkClient, newChkAdmin);
+        }
+
+    }
     //region User
     public void createNewUser() {
         if (newLoginField.getText().isEmpty() || newPswField.getText().isEmpty() ||
@@ -219,7 +241,10 @@ public class Main implements Initializable {
     {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("create_user.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+        Parent parent = fxmlLoader.load();
+        Main main = fxmlLoader.getController();
+        main.setData(entityManagerFactory, currentUser);
+        Scene scene = new Scene(parent);
         stage.setTitle("Create New User");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);

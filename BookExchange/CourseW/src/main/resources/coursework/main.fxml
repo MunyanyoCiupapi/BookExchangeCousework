@@ -6,6 +6,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -48,9 +50,29 @@
           </Tab>
           <Tab text="Publications">
             <content>
-                <fx:include source="publications_tab.fxml"/>
+                <fx:include source="publications_tab.fxml" />
             </content>
           </Tab>
+            <Tab text="AlternativeUserManager">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView layoutX="4.0" layoutY="21.0" prefHeight="257.0" prefWidth="725.0">
+                          <columns>
+                            <TableColumn fx:id="columnId" prefWidth="75.0" text="Id" />
+                            <TableColumn fx:id="columnName" prefWidth="75.0" text="Name" />
+                              <TableColumn fx:id="columnSurname" prefWidth="75.0" text="Surname" />
+                              <TableColumn fx:id="columnUsername" prefWidth="75.0" text="Username" />
+                              <TableColumn fx:id="columnPassword" prefWidth="75.0" text="Password" />
+                              <TableColumn prefWidth="75.0" text="Column X" />
+                              <TableColumn prefWidth="75.0" text="Column X" />
+                              <TableColumn prefWidth="75.0" text="Column X" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
    </children>
