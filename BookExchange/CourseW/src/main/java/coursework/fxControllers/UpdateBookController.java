@@ -97,7 +97,6 @@ public class UpdateBookController implements Initializable {
             hibernate.update(bookToUpdate);
 
 
-            showAlert(Alert.AlertType.INFORMATION, "Success", null, "Book updated successfully.");
 
             Stage stage = (Stage) bookTitleField.getScene().getWindow();
             stage.close();

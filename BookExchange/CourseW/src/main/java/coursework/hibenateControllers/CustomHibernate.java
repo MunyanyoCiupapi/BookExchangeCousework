@@ -34,4 +34,5 @@ public class CustomHibernate extends GenericHibernate{
         }
         return user;
     }
+
 }

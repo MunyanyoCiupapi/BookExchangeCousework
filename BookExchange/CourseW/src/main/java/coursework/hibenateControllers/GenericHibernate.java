@@ -21,6 +21,7 @@ public class GenericHibernate {
         this.entityManagerFactory = entityManagerFactory;
     }
 
+
     public <T> void create(T entity) {
         try {
             entityManager = entityManagerFactory.createEntityManager();
