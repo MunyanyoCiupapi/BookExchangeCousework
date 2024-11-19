@@ -17,6 +17,7 @@ public class Chat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @ManyToOne
     private Book book;
     @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL)
     private List<Comment> messages;

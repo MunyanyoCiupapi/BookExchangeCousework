@@ -1,5 +1,6 @@
 package coursework.fxControllers;
 
+import coursework.model.Book;
 import coursework.model.Manga;
 import coursework.hibenateControllers.GenericHibernate;
 import coursework.model.enums.Demographic;
@@ -16,7 +17,7 @@ import lombok.Setter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MangaController implements Initializable {
+public class MangaController {
 
     @FXML
     public TextField mangaTitleField;
@@ -34,17 +35,19 @@ public class MangaController implements Initializable {
     public CheckBox mangaIsColorField;
 
     public Manga mangaToUpdate;
-
-    EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory("coursework");
-    GenericHibernate hibernate = new GenericHibernate(entityManagerFactory);
+    public GenericHibernate hibernate;
 
 
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-            mangaDemographicCmbx.setItems(FXCollections.observableArrayList(Demographic.values()));
-            mangaLanguageCmbx.setItems(FXCollections.observableArrayList(Language.values()));
+    public void setManga(Manga manga, GenericHibernate hibernate) {
+        this.mangaToUpdate = manga;
+        this.hibernate = hibernate;
         populateFields();
+        populateComboBoxes();
+    }
+
+    private void populateComboBoxes() {
+        mangaDemographicCmbx.setItems(FXCollections.observableArrayList(Demographic.values()));
+        mangaLanguageCmbx.setItems(FXCollections.observableArrayList(Language.values()));
     }
 
 
@@ -110,6 +113,8 @@ public class MangaController implements Initializable {
             mangaToUpdate.setColor(mangaIsColorField.isSelected());
 
             hibernate.update(mangaToUpdate);
+
+            showAlert(Alert.AlertType.INFORMATION, "Success", null, "Manga publication updated successfully.");
 
             Stage stage = (Stage) mangaTitleField.getScene().getWindow();
             stage.close();

@@ -4,6 +4,7 @@ import coursework.StartGUI;
 import coursework.hibenateControllers.GenericHibernate;
 import coursework.model.Book;
 import coursework.model.Manga;
+import coursework.model.Periodical;
 import coursework.model.Publication;
 import coursework.model.enums.BookFormat;
 import coursework.model.enums.Genre;
@@ -67,7 +68,7 @@ public class PublicationsController implements Initializable {
     @FXML
     public TableColumn<Publication,String>  colIsbn;
     @FXML
-    public TableColumn<Publication,Integer>  colYear;
+    public TableColumn<Publication,String>  colYear;
 
     public Button btnDeletePublication;
 
@@ -83,49 +84,61 @@ public class PublicationsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         if (bookGenreField != null) populateComboBoxes();
         if (publicationTableView != null) {
+            initializeTableColumns();
             fillPublicationTable();
-
-            colTitle.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
-            colAuthor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
-            colPublisher.setCellValueFactory(cellData -> {
-                Publication publication = cellData.getValue();
-                if (publication instanceof Book) {
-                    return new SimpleStringProperty(((Book) publication).getPublisher());
-                } else if (publication instanceof Manga) {
-                    return new SimpleStringProperty("");
-                }
-                return null;
-            });
-
-            colIsbn.setCellValueFactory(cellData -> {
-                Publication publication = cellData.getValue();
-                if (publication instanceof Book) {
-                    return new SimpleStringProperty(((Book) publication).getIsbn());
-                } else if (publication instanceof Manga) {
-                    return new SimpleStringProperty("");
-                }
-                return null;
-            });
-
-            colYear.setCellValueFactory(cellData -> {
-                Publication publication = cellData.getValue();
-                if (publication instanceof Book) {
-                    return new SimpleObjectProperty<>(((Book) publication).getPublicationYear());
-                } else {
-                    return new SimpleObjectProperty<>(null);
-                }
-            });
-
-            colType.setCellValueFactory(cellData -> {
-                Publication publication = cellData.getValue();
-                if (publication instanceof Book) {
-                    return new SimpleStringProperty("Book");
-                } else if (publication instanceof Manga) {
-                    return new SimpleStringProperty("Manga");
-                }
-                return null;
-            });
         }
+    }
+
+    @FXML
+    private void initializeTableColumns() {
+        colTitle.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getTitle()));
+        colAuthor.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getAuthor()));
+        colPublisher.setCellValueFactory(cellData -> {
+            Publication publication = cellData.getValue();
+            if (publication instanceof Book) {
+                return new SimpleStringProperty(((Book) publication).getPublisher());
+            } else if (publication instanceof Manga) {
+                return new SimpleStringProperty(""); // If no publisher for Manga
+            } else if (publication instanceof Periodical) {
+                return new SimpleStringProperty(((Periodical) publication).getPublisher()); // Handle Periodical publisher
+            }
+            return null;
+        });
+
+        colIsbn.setCellValueFactory(cellData -> {
+            Publication publication = cellData.getValue();
+            if (publication instanceof Book) {
+                return new SimpleStringProperty(((Book) publication).getIsbn());
+            } else if (publication instanceof Manga) {
+                return new SimpleStringProperty("");
+            } else if (publication instanceof Periodical) {
+                return new SimpleStringProperty("");
+            }
+            return null;
+        });
+
+        colYear.setCellValueFactory(cellData -> {
+            Publication publication = cellData.getValue();
+            if (publication instanceof Book) {
+                return new SimpleObjectProperty<>(((Book) publication).getPublicationYear()).asString();
+            } else if (publication instanceof Periodical) {
+                return new SimpleObjectProperty<>(((Periodical) publication).getPublicationDate().getYear() + "/" +((Periodical) publication).getPublicationDate().getMonth() + "/" + ((Periodical) publication).getPublicationDate().getDayOfMonth());
+            } else {
+                return new SimpleObjectProperty<>(null);
+            }
+        });
+
+        colType.setCellValueFactory(cellData -> {
+            Publication publication = cellData.getValue();
+            if (publication instanceof Book) {
+                return new SimpleStringProperty("Book");
+            } else if (publication instanceof Manga) {
+                return new SimpleStringProperty("Manga");
+            } else if (publication instanceof Periodical) {
+                return new SimpleStringProperty("Periodical");
+            }
+            return null;
+        });
     }
 
     @FXML
@@ -192,19 +205,6 @@ public class PublicationsController implements Initializable {
     }
 
 
-    @FXML
-    private void openCreateNewBookForm() throws IOException
-    {
-        Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("create_book.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
-        stage.setTitle("Create New Book");
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setScene(scene);
-        stage.setOnHidden(event -> fillPublicationTable());
-        stage.showAndWait();
-
-    }
 
     @FXML
     public void deletePublication() {
@@ -231,13 +231,78 @@ public class PublicationsController implements Initializable {
 
                openBookUpdateForm();
            }
-
-           showAlert(Alert.AlertType.INFORMATION, "Success", null, "Publication updated successfully.");
+           else if(selectedPublication instanceof Manga)
+           {
+               openMangaUpdateForm();
+           } else if (selectedPublication instanceof Periodical) {
+               openUpdatePeriodicalForm();
+           }
        }
 
 
     }
 
+    @FXML
+    private void openCreateNewPeriodical() throws IOException {
+        FXMLLoader loader = new FXMLLoader(StartGUI.class.getResource("create_periodical.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+
+        PeriodicalController periodicalController = loader.getController();
+
+        periodicalController.setPeriodical(null, hibernate);
+
+        stage.setTitle("Create New Periodical");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+
+        stage.setOnHidden(event -> fillPublicationTable());
+
+        stage.showAndWait();
+    }
+
+    @FXML
+    private void openUpdatePeriodicalForm() throws IOException {
+        selectedPublication = publicationTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedPublication == null || !(selectedPublication instanceof Periodical)) {
+            showAlert(Alert.AlertType.ERROR, "Error", null, "Please select a periodical to update.");
+            return;
+        }
+
+        Periodical latestSelectedPeriodical = hibernate.getEntityById(Periodical.class, selectedPublication.getId());
+
+        FXMLLoader loader = new FXMLLoader(StartGUI.class.getResource("update_periodical.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+
+        PeriodicalController periodicalController = loader.getController();
+
+        periodicalController.setPeriodical(latestSelectedPeriodical, hibernate);
+
+        stage.setTitle("Update Periodical");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+
+        stage.setOnHidden(event -> fillPublicationTable());
+
+        stage.showAndWait();
+    }
+
+
+    @FXML
+    private void openCreateNewBookForm() throws IOException
+    {
+        Stage stage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("create_book.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        stage.setTitle("Create New Book");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.setOnHidden(event -> fillPublicationTable());
+        stage.showAndWait();
+
+    }
     @FXML
     private void openBookUpdateForm() throws IOException {
         selectedPublication = publicationTableView.getSelectionModel().getSelectedItem();
@@ -262,12 +327,36 @@ public class PublicationsController implements Initializable {
         stage.setOnHidden(event -> fillPublicationTable());
         stage.showAndWait();
     }
+
     @FXML
     public void openCreateNewMangaForm() throws IOException {
         Stage stage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("create_manga.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         stage.setTitle("Create New Manga");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.setOnHidden(event -> fillPublicationTable());
+        stage.showAndWait();
+    }
+    private void openMangaUpdateForm() throws IOException {
+        selectedPublication = publicationTableView.getSelectionModel().getSelectedItem();
+        if (selectedPublication == null || !(selectedPublication instanceof Manga)) {
+            showAlert(Alert.AlertType.ERROR, "Error", null, "Please select a manga to update.");
+            return;
+        }
+
+        Manga latestSelectedManga = hibernate.getEntityById(Manga.class, selectedPublication.getId());
+
+        FXMLLoader loader = new FXMLLoader(StartGUI.class.getResource("update_manga.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+
+        MangaController updateManga = loader.getController();
+
+        updateManga.setManga(latestSelectedManga, hibernate);
+
+        stage.setTitle("Update Manga");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setOnHidden(event -> fillPublicationTable());

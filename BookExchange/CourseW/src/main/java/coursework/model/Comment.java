@@ -21,7 +21,7 @@ public class Comment {
     private String title;
     private String body;
     private LocalDateTime timestamp;
-    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "parentComment", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Comment> replies;
     @ManyToOne
     private Comment parentComment;
@@ -29,6 +29,8 @@ public class Comment {
     private Client client;
     @ManyToOne
     private Chat chat;
+    @ManyToOne
+    private Client commentOwner;
 
 
     public Comment(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client) {
@@ -38,5 +40,26 @@ public class Comment {
         this.replies = replies;
         this.parentComment = parentComment;
         this.client = client;
+    }
+
+    public Comment(String title, String body, Client client, Client commentOwner) {
+        this.title = title;
+        this.body = body;
+        this.client = client;
+        this.commentOwner = commentOwner;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    public Comment(String title, String body, Comment parentComment, Client commentOwner) {
+        this.title = title;
+        this.body = body;
+        this.parentComment = parentComment;
+        this.commentOwner = commentOwner;
+        this.timestamp = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return commentOwner.name + " " + commentOwner.surname + " " + timestamp;
     }
 }
