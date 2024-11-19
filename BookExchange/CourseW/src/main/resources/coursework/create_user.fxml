@@ -25,7 +25,7 @@
       <Label layoutX="331.0" layoutY="36.0" text="Enter name:" />
       <Label layoutX="331.0" layoutY="96.0" text="Enter surname:" />
       <Label layoutX="101.0" layoutY="203.0" text="Enter address:" />
-      <Label layoutX="101.0" layoutY="258.0" text="Enter address:" />
+      <Label layoutX="101.0" layoutY="258.0" text="Enter phone number:" />
       <Label layoutX="319.0" layoutY="203.0" text="Enter birthday:" />
       <Label layoutX="322.0" layoutY="267.0" text="Select which type user will be:" />
    </children>

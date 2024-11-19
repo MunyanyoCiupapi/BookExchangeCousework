@@ -143,7 +143,7 @@ public class Main implements Initializable {
                 hibernate.create(client);
                 showAlert(Alert.AlertType.INFORMATION, "Success", null, "Client user has been created successfully.");
             } else {
-                Admin admin = new Admin(newLoginField.getText(), newPswField.getText(), newNameField.getText(), newSurnameField.getText(), newAddressField.getText());
+                Admin admin = new Admin(newLoginField.getText(), newPswField.getText(), newNameField.getText(), newSurnameField.getText(), newPhoneNumField.getText());
                 hibernate.create(admin);
                 showAlert(Alert.AlertType.INFORMATION, "Success", null, "Admin user has been created successfully.");
             }
