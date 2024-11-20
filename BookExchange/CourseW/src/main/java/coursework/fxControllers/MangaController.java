@@ -41,11 +41,11 @@ public class MangaController {
     public void setManga(Manga manga, GenericHibernate hibernate) {
         this.mangaToUpdate = manga;
         this.hibernate = hibernate;
-        populateFields();
         populateComboBoxes();
     }
 
     private void populateComboBoxes() {
+
         mangaDemographicCmbx.setItems(FXCollections.observableArrayList(Demographic.values()));
         mangaLanguageCmbx.setItems(FXCollections.observableArrayList(Language.values()));
     }

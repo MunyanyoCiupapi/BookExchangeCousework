@@ -238,8 +238,6 @@ public class PublicationsController implements Initializable {
                openUpdatePeriodicalForm();
            }
        }
-
-
     }
 
     @FXML
@@ -330,9 +328,13 @@ public class PublicationsController implements Initializable {
 
     @FXML
     public void openCreateNewMangaForm() throws IOException {
+        FXMLLoader loader = new FXMLLoader(StartGUI.class.getResource("create_manga.fxml"));
         Stage stage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("create_manga.fxml"));
-        Scene scene = new Scene(fxmlLoader.load());
+        Scene scene = new Scene(loader.load());
+
+        MangaController updateManga = loader.getController();
+
+        updateManga.setManga(null, hibernate);
         stage.setTitle("Create New Manga");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
