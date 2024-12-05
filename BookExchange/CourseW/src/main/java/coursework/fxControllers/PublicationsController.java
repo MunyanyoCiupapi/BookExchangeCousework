@@ -87,6 +87,20 @@ public class PublicationsController implements Initializable {
             initializeTableColumns();
             fillPublicationTable();
         }
+
+        publicationTableView.setRowFactory(tv -> {
+            TableRow<Publication> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && !row.isEmpty()) {
+                    try {
+                        openPublicationOverview();
+                    } catch (IOException e) {
+                        showAlert(Alert.AlertType.ERROR, "Error", null, "Unable to open publication overview.");
+                    }
+                }
+            });
+            return row;
+        });
     }
 
     @FXML
@@ -359,6 +373,31 @@ public class PublicationsController implements Initializable {
         updateManga.setManga(latestSelectedManga, hibernate);
 
         stage.setTitle("Update Manga");
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.setScene(scene);
+        stage.setOnHidden(event -> fillPublicationTable());
+        stage.showAndWait();
+    }
+
+    @FXML
+    public void openPublicationOverview() throws IOException {
+        selectedPublication = publicationTableView.getSelectionModel().getSelectedItem();
+
+        if (selectedPublication == null) {
+            showAlert(Alert.AlertType.ERROR, "Error", null, "Please select a publication to view.");
+            return;
+        }
+
+        Publication latestSelectedPublication = hibernate.getEntityById(Publication.class, selectedPublication.getId());
+
+        FXMLLoader loader = new FXMLLoader(StartGUI.class.getResource("publication_overview.fxml"));
+        Stage stage = new Stage();
+        Scene scene = new Scene(loader.load());
+
+        PublicationOverviewController publicationOverview = loader.getController();
+        publicationOverview.setPublicationOverview(latestSelectedPublication, hibernate);
+
+        stage.setTitle("Publication Overview");
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setOnHidden(event -> fillPublicationTable());
