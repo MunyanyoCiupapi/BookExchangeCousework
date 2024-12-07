@@ -55,14 +55,9 @@ public class Book extends Publication{
         this.format = format;
         this.summary = summary;
     }
-    public Book(String isbn, String publisher, String genre, String language,  int publicationYear, String format, String summary) {
-        super();
-        this.isbn = isbn;
-        this.publisher = publisher;
-        this.genre = Genre.valueOf(genre.toUpperCase());
-        this.language = Language.valueOf(language.toUpperCase());
-        this.publicationYear = publicationYear;
-        this.format = BookFormat.valueOf(format.toUpperCase());
-        this.summary = summary;
+
+    @Override
+    public String toString() {
+        return title + " " + genre + " " + owner + " " + publicationStatus;
     }
 }

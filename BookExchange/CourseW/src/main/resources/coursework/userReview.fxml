@@ -8,20 +8,21 @@
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework.fxControllers.UserReview">
-   <children>
-      <TreeView fx:id="userReview" layoutX="13.0" layoutY="14.0" onMouseClicked="#loadComment" prefHeight="191.0" prefWidth="574.0">
-         <contextMenu>
-            <ContextMenu fx:id="commentContextMenu">
-              <items>
-                <MenuItem fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteComment" text="Delete" />
-              </items>
-            </ContextMenu>
-         </contextMenu>
-      </TreeView>
-      <TextArea fx:id="commentBody" layoutX="16.0" layoutY="248.0" prefHeight="98.0" prefWidth="567.0" />
-      <TextField fx:id="commentTitle" layoutX="16.0" layoutY="215.0" prefHeight="26.0" prefWidth="567.0" />
-      <Button layoutX="209.0" layoutY="360.0" mnemonicParsing="false" onAction="#insertComment" prefHeight="32.0" prefWidth="55.0" text="Add" />
-      <Button fx:id="updateButton" layoutX="300.0" layoutY="360.0" mnemonicParsing="false" onAction="#updateComment" prefHeight="32.0" prefWidth="70.0" text="Update" />
-   </children>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework.fxControllers.UserReview">
+    <children>
+        <TreeView fx:id="userReview" layoutX="13.0" layoutY="14.0" onMouseClicked="#loadComment" prefHeight="191.0" prefWidth="574.0">
+            <contextMenu>
+                <ContextMenu fx:id="commentContextMenu">
+                    <items>
+                        <MenuItem fx:id="deleteItem" mnemonicParsing="false" onAction="#deleteComment" text="Delete" />
+                    </items>
+                </ContextMenu>
+            </contextMenu>
+        </TreeView>
+        <TextArea fx:id="commentBody" layoutX="16.0" layoutY="259.0" prefHeight="98.0" prefWidth="567.0" />
+        <TextField fx:id="commentTitle" layoutX="16.0" layoutY="215.0" prefHeight="26.0" prefWidth="567.0" />
+        <Button layoutX="228.0" layoutY="360.0" mnemonicParsing="false" onAction="#insertComment" text="Add" />
+        <Button fx:id="updateButton" layoutX="300.0" layoutY="360.0" mnemonicParsing="false" onAction="#updateComment" text="Update" />
+    </children>
 </AnchorPane>

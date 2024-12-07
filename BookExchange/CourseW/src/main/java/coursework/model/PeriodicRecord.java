@@ -32,4 +32,7 @@ public class PeriodicRecord {
         this.returnDate = returnDate;
         this.status = status;
     }
+
+    public PeriodicRecord(Client client, Publication publication, LocalDate now, PublicationStatus publicationStatus) {
+    }
 }

@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -97,6 +98,19 @@
                         <Button layoutX="587.0" layoutY="187.0" mnemonicParsing="false" onAction="#openCreateNewPeriodical" prefHeight="25.0" prefWidth="113.0" text="Add Periodical" />
                         </children></AnchorPane>
                 </content>
+            </Tab>
+            <Tab fx:id="exchangeTab" onSelectionChanged="#loadData" text="Book Exchange">
+              <content>
+                <AnchorPane fx:id="bookExchangeTab" minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="availableBookList" layoutX="32.0" layoutY="51.0" onMouseClicked="#loadPublicationInfo" prefHeight="405.0" prefWidth="186.0" />
+                        <Label layoutX="32.0" layoutY="22.0" text="Available Books:" />
+                        <Button fx:id="leaveReviewButton" layoutX="236.0" layoutY="425.0" mnemonicParsing="false" onAction="#loadReviewWindow" text="Leave Review" />
+                        <Button layoutX="343.0" layoutY="425.0" mnemonicParsing="false" onAction="#reserveBook" prefHeight="25.0" prefWidth="98.0" text="Reserve Book" />
+                        <TextArea fx:id="aboutBook" layoutX="243.0" layoutY="51.0" prefHeight="70.0" prefWidth="200.0" />
+                     </children>
+                  </AnchorPane>
+              </content>
             </Tab>
         </tabs>
       </TabPane>

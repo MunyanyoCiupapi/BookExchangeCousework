@@ -7,6 +7,7 @@ import coursework.hibenateControllers.GenericHibernate;
 import coursework.model.User;
 import coursework.model.enums.Demographic;
 import coursework.model.enums.Language;
+import coursework.model.enums.PublicationStatus;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import javafx.collections.FXCollections;
@@ -92,6 +93,7 @@ public class MangaController {
             );
 
             if(currentUser instanceof Client) newManga.setOwner((Client) currentUser);
+            newManga.setPublicationStatus(PublicationStatus.AVAILABLE);
             hibernate.create(newManga);
 
 

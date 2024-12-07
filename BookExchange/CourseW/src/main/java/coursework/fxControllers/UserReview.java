@@ -1,7 +1,6 @@
 package coursework.fxControllers;
 
 import coursework.hibenateControllers.CustomHibernate;
-import coursework.hibenateControllers.GenericHibernate;
 import coursework.model.Client;
 import coursework.model.Comment;
 import coursework.model.User;
@@ -38,14 +37,21 @@ public class UserReview {
         if (currentUser instanceof Client) {
             updateButton.setDisable(true);
             commentContextMenu.hide();
-            //deleteItem.setDisable(true);
         }
     }
 
-    public void loadComment(MouseEvent mouseEvent) {
+    private void fillTree() {
+        userReview.setRoot(new TreeItem<>());
+        userReview.setShowRoot(false);
+        userReview.getRoot().setExpanded(true);
+        Client clientFromDb = hibernate.getEntityById(Client.class, targetClient.getId());
+        clientFromDb.getCommentList().forEach(c -> addTreeItem(c, userReview.getRoot()));
     }
 
-    public void deleteComment(ActionEvent actionEvent) {
+    public void addTreeItem(Comment comment, TreeItem<Comment> parentComment) {
+        TreeItem<Comment> treeItem = new TreeItem<>(comment);
+        parentComment.getChildren().add(treeItem);
+        comment.getReplies().forEach(sub -> addTreeItem(sub, treeItem));
     }
 
     public void insertComment() {
@@ -63,20 +69,22 @@ public class UserReview {
         }
     }
 
-
-    public void updateComment(ActionEvent actionEvent) {
+    public void loadComment() {
+        Comment selectedComment = userReview.getSelectionModel().getSelectedItem().getValue();
+        commentTitle.setText(selectedComment.getTitle());
+        commentBody.setText(selectedComment.getBody());
     }
 
-    private void fillTree() {
-        userReview.setRoot(new TreeItem<>());
-        userReview.setShowRoot(false);
-        userReview.getRoot().setExpanded(true);
-        Client clientFromDb = hibernate.getEntityById(Client.class, targetClient.getId());
-        clientFromDb.getCommentList().forEach(c -> addTreeItem(c, userReview.getRoot()));
+    public void updateComment() {
+        Comment selectedComment = userReview.getSelectionModel().getSelectedItem().getValue();
+        selectedComment.setTitle(commentTitle.getText());
+        selectedComment.setBody(commentBody.getText());
+        hibernate.update(selectedComment);
+        fillTree();
     }
 
-    public void addTreeItem(Comment comment, TreeItem<Comment> parentComment) {
-        TreeItem<Comment> treeItem = new TreeItem<>(comment);
-        parentComment.getChildren().add(treeItem);
-        comment.getReplies().forEach(sub -> addTreeItem(sub, treeItem));
-    }}
+    public void deleteComment() {
+        hibernate.deleteComment(userReview.getSelectionModel().getSelectedItem().getValue().getId());
+        fillTree();
+    }
+}

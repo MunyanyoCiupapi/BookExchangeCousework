@@ -7,6 +7,7 @@ import coursework.model.*;
 import coursework.model.enums.BookFormat;
 import coursework.model.enums.Genre;
 import coursework.model.enums.Language;
+import coursework.model.enums.PublicationStatus;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
@@ -24,21 +25,24 @@ import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 
 
 import javax.swing.*;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
 
-public class Main{
+public class Main implements Initializable {
 
     //region UserFields
     @FXML
@@ -128,6 +132,7 @@ public class Main{
 
 
     //region My Books Tab
+
     @FXML
     public TableView<BookTableParameters> myBookList;
     @FXML
@@ -150,6 +155,15 @@ public class Main{
     public Tab publicationsTab;
     @FXML
     public Tab usersTab;
+    @FXML
+    public Tab exchangeTab;
+
+
+    @FXML
+    public ListView<Publication> availableBookList;
+    @FXML
+    public Button leaveReviewButton;
+    public TextArea aboutBook;
 
     private Publication selectedPublication = null;
 
@@ -193,6 +207,9 @@ public class Main{
          populatePublicationsTab();
         } else if (myBooksTab.isSelected()) {
             fillBookList();
+        } else if (exchangeTab.isSelected()) {
+            availableBookList.getItems().clear();
+            availableBookList.getItems().addAll(hibernate.getAvailablePublications(currentUser));
         }
     }
 
@@ -272,7 +289,7 @@ public class Main{
         userListField.getItems().addAll(userList);
     }
 
-    public void loadUserData(MouseEvent mouseEvent) {
+    public void loadUserData() {
         selectedUser = userListField.getSelectionModel().getSelectedItem();
         User latestUser = hibernate.getEntityById(User.class, selectedUser.getId());
 
@@ -462,7 +479,8 @@ public class Main{
                     bookFormatField.getValue(),
                     bookSummaryField.getText()
             );
-            if(currentUser instanceof Client) newBook.setClient((Client) currentUser);
+            if(currentUser instanceof Client) newBook.setOwner((Client) currentUser);
+            newBook.setPublicationStatus(PublicationStatus.AVAILABLE);
             hibernate.create(newBook);
             showAlert(Alert.AlertType.INFORMATION, "Success", null, "Book has been created successfully.");
 
@@ -525,6 +543,7 @@ public class Main{
         stage.setScene(scene);
 
         stage.setOnHidden(event -> fillPublicationTable());
+        stage.setOnHidden(event -> fillBookList());
 
         stage.showAndWait();
     }
@@ -553,6 +572,7 @@ public class Main{
         stage.setScene(scene);
 
         stage.setOnHidden(event -> fillPublicationTable());
+        stage.setOnHidden(event -> fillBookList());
 
         stage.showAndWait();
     }
@@ -571,6 +591,7 @@ public class Main{
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setOnHidden(event -> fillPublicationTable());
+        stage.setOnHidden(event -> fillBookList());
         stage.showAndWait();
 
     }
@@ -596,6 +617,7 @@ public class Main{
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setOnHidden(event -> fillPublicationTable());
+        stage.setOnHidden(event -> fillBookList());
         stage.showAndWait();
     }
 
@@ -611,6 +633,7 @@ public class Main{
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setOnHidden(event -> fillPublicationTable());
+        stage.setOnHidden(event -> fillBookList());
         stage.showAndWait();
     }
     private void openMangaUpdateForm() throws IOException {
@@ -634,6 +657,7 @@ public class Main{
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.setScene(scene);
         stage.setOnHidden(event -> fillPublicationTable());
+        stage.setOnHidden(event -> fillBookList());
         stage.showAndWait();
     }
 
@@ -665,6 +689,61 @@ public class Main{
         stage.showAndWait();
     }
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+
+        if(myBookList!=null)
+        {
+            availableBookList.setEditable(true);
+
+            collBookId.setCellValueFactory(new PropertyValueFactory<>("id"));
+            colBookTitle.setCellValueFactory(new PropertyValueFactory<>("publicationTitle"));
+            colRequestUser.setCellValueFactory(new PropertyValueFactory<>("publicationUser"));
+            Callback<TableColumn<BookTableParameters, Void>, TableCell<BookTableParameters, Void>> callbackBookStatus = param -> {
+                final TableCell<BookTableParameters, Void> cell = new TableCell<>() {
+
+                    private final ChoiceBox<PublicationStatus> bookStatus = new ChoiceBox<>();
+
+                    {
+                        bookStatus.getItems().addAll(PublicationStatus.values());
+                        bookStatus.setOnAction(event -> {
+                            BookTableParameters rowData = getTableRow().getItem();
+                            if (rowData != null) {
+                                rowData.setPublicationStatus(bookStatus.getValue());
+
+                                Publication publication = hibernate.getEntityById(Publication.class, rowData.getId());
+                                publication.setPublicationStatus(bookStatus.getValue());
+                                hibernate.update(publication);
+
+                                insertPublicationRecord(publication);
+                            }
+                        });
+                    }
+
+                    @Override
+                    protected void updateItem(Void item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (empty) {
+                            setGraphic(null);
+                        } else {
+                            BookTableParameters rowData = getTableRow().getItem();
+                            bookStatus.setValue(rowData.getPublicationStatus());
+                            setGraphic(bookStatus);
+                        }
+                    }
+                };
+                return cell;
+            };
+
+            colBookStatus.setCellFactory(callbackBookStatus);
+        }
+
+    }
+
+    private void insertPublicationRecord(Publication publication) {
+        PeriodicRecord periodicRecord = new PeriodicRecord(publication.getClient(), publication, LocalDate.now(), publication.getPublicationStatus());
+        hibernate.create(periodicRecord);
+    }
     private void fillBookList() {
         myBookList.getItems().clear();
         List<Publication> publications = hibernate.getOwnPublications(currentUser);
@@ -681,6 +760,56 @@ public class Main{
         }
     }
 
+    public void loadReviewWindow() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("userReview.fxml"));
+        Parent parent = fxmlLoader.load();
+        UserReview userReview = fxmlLoader.getController();
+        userReview.setData(entityManagerFactory, currentUser, availableBookList.getSelectionModel().getSelectedItem().getOwner());
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setTitle("Book Exchange Test");
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+    }
 
 
+    public void loadPublicationInfo() {
+        Publication publication = availableBookList.getSelectionModel().getSelectedItem();
+        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
+
+        if (publicationFromDb instanceof Book book)
+            aboutBook.setText("BOOK"+ "\n" +
+                    "Title :" + book.getTitle() + "\n"
+                    + "Author:" + book.getAuthor() + "\n" + "Year:" + book.getPublicationYear() + "\n"
+                    + "Summary: " + book.getSummary());
+        else if (publicationFromDb instanceof  Manga manga)
+            aboutBook.setText("MANGA"+ "\n" +
+                    "Title :" + manga.getTitle() + "\n"
+                    + "Author:" + manga.getAuthor() + "\n" +
+                    "Demographic:" + manga.getDemographic() + "\n"
+                    + "Is color: " + manga.isColor());
+         else if (publicationFromDb instanceof Periodical periodical)
+             aboutBook.setText("Periodical"+ "\n" +
+                     "Publisher :" + periodical.getPublisher() + "\n"
+                + "Editor:" + periodical.getEditor() + "\n");
+
+
+            
+
+
+    }
+
+    public void reserveBook() {
+
+        Publication publication = availableBookList.getSelectionModel().getSelectedItem();
+        Publication publicationFromDb = hibernate.getEntityById(Publication.class, publication.getId());
+        publicationFromDb.setPublicationStatus(PublicationStatus.REQUESTED);
+        publicationFromDb.setClient((Client) currentUser);
+        hibernate.update(publicationFromDb);
+
+        PeriodicRecord periodicRecord = new PeriodicRecord((Client) currentUser, publicationFromDb, LocalDate.now(), PublicationStatus.REQUESTED);
+        hibernate.create(periodicRecord);
+
+    }
 }

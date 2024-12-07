@@ -6,6 +6,7 @@ import coursework.model.Manga;
 import coursework.model.Periodical;
 import coursework.model.User;
 import coursework.model.enums.Frequency;
+import coursework.model.enums.PublicationStatus;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -105,6 +106,7 @@ public class PeriodicalController {
             );
 
             if(currentUser instanceof Client) newPeriodical.setOwner((Client) currentUser);
+            newPeriodical.setPublicationStatus(PublicationStatus.AVAILABLE);
             hibernate.create(newPeriodical);
 
             showAlert(Alert.AlertType.INFORMATION, "Success", null, "Periodical created successfully.");

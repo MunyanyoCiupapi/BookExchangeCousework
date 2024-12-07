@@ -33,4 +33,9 @@ public class Periodical extends Publication{
         this.frequency = frequency;
         this.publisher = publisher;
     }
+
+    @Override
+    public String toString() {
+        return issueNumber + " "  + publisher + " " + owner + " " + publicationStatus;
+    }
 }

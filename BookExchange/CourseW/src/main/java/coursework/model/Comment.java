@@ -33,14 +33,6 @@ public class Comment {
     private Client commentOwner;
 
 
-    public Comment(String title, String body, LocalDateTime timestamp, List<Comment> replies, Comment parentComment, Client client) {
-        this.title = title;
-        this.body = body;
-        this.timestamp = timestamp;
-        this.replies = replies;
-        this.parentComment = parentComment;
-        this.client = client;
-    }
 
     public Comment(String title, String body, Client client, Client commentOwner) {
         this.title = title;
