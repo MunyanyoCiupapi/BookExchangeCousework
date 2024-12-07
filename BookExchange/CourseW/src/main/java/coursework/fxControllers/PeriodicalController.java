@@ -1,8 +1,10 @@
 package coursework.fxControllers;
 
 import coursework.hibenateControllers.GenericHibernate;
+import coursework.model.Client;
 import coursework.model.Manga;
 import coursework.model.Periodical;
+import coursework.model.User;
 import coursework.model.enums.Frequency;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -30,10 +32,13 @@ public class PeriodicalController {
 
     public Periodical periodicalToUpdate;
     public GenericHibernate hibernate;
+    public User currentUser;
 
-    public void setPeriodical(Periodical periodical, GenericHibernate hibernate) {
+
+    public void setPeriodical(Periodical periodical, GenericHibernate hibernate, User currentUser) {
         this.periodicalToUpdate = periodical;
         this.hibernate = hibernate;
+        this.currentUser = currentUser;
         populateFields();
         populateComboBoxes();
     }
@@ -99,6 +104,7 @@ public class PeriodicalController {
                     publisherField.getText()
             );
 
+            if(currentUser instanceof Client) newPeriodical.setOwner((Client) currentUser);
             hibernate.create(newPeriodical);
 
             showAlert(Alert.AlertType.INFORMATION, "Success", null, "Periodical created successfully.");

@@ -1,8 +1,10 @@
 package coursework.fxControllers;
 
 import coursework.model.Book;
+import coursework.model.Client;
 import coursework.model.Manga;
 import coursework.hibenateControllers.GenericHibernate;
+import coursework.model.User;
 import coursework.model.enums.Demographic;
 import coursework.model.enums.Language;
 import jakarta.persistence.EntityManagerFactory;
@@ -36,11 +38,13 @@ public class MangaController {
 
     public Manga mangaToUpdate;
     public GenericHibernate hibernate;
+    public User currentUser;
 
 
-    public void setManga(Manga manga, GenericHibernate hibernate) {
+    public void setManga(Manga manga, GenericHibernate hibernate, User currentUser) {
         this.mangaToUpdate = manga;
         this.hibernate = hibernate;
+        this.currentUser = currentUser;
         populateComboBoxes();
     }
 
@@ -87,6 +91,7 @@ public class MangaController {
                     mangaIsColorField.isSelected()
             );
 
+            if(currentUser instanceof Client) newManga.setOwner((Client) currentUser);
             hibernate.create(newManga);
 
 

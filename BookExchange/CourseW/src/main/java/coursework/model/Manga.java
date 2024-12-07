@@ -22,14 +22,6 @@ public class Manga extends Publication{
     private Demographic demographic;
     private boolean isColor;
 
-    public Manga(int id, String title, String author, String illustrator, String originalLanguage, int volumeNumber, Demographic demographic, boolean isColor) {
-        super(id, title, author);
-        this.illustrator = illustrator;
-        this.originalLanguage = originalLanguage;
-        this.volumeNumber = volumeNumber;
-        this.demographic = demographic;
-        this.isColor = isColor;
-    }
 
     public Manga(String title, String author, String illustrator, String originalLanguage, int volumeNumber, Demographic demographic, boolean isColor) {
         super(title, author);

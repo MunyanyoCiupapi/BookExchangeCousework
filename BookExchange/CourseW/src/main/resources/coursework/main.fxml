@@ -14,9 +14,9 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23" xmlns:fx="http://javafx.com/fxml/1" fx:controller="coursework.fxControllers.Main">
    <children>
-      <TabPane prefHeight="505.0" prefWidth="733.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="allTabs" prefHeight="505.0" prefWidth="733.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Users">
+          <Tab fx:id="usersTab" onSelectionChanged="#loadData" text="Users">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="415.0" prefWidth="657.0">
                      <children>
@@ -48,30 +48,55 @@
                   </AnchorPane>
             </content>
           </Tab>
-          <Tab text="Publications">
-            <content>
-                <fx:include source="publications_tab.fxml" />
-            </content>
-          </Tab>
-            <Tab text="AlternativeUserManager">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView layoutX="4.0" layoutY="21.0" prefHeight="257.0" prefWidth="725.0">
-                          <columns>
-                            <TableColumn fx:id="columnId" prefWidth="75.0" text="Id" />
-                            <TableColumn fx:id="columnName" prefWidth="75.0" text="Name" />
-                              <TableColumn fx:id="columnSurname" prefWidth="75.0" text="Surname" />
-                              <TableColumn fx:id="columnUsername" prefWidth="75.0" text="Username" />
-                              <TableColumn fx:id="columnPassword" prefWidth="75.0" text="Password" />
-                              <TableColumn prefWidth="75.0" text="Column X" />
-                              <TableColumn prefWidth="75.0" text="Column X" />
-                              <TableColumn prefWidth="75.0" text="Column X" />
-                          </columns>
+            <Tab fx:id="publicationsTab" onSelectionChanged="#loadData" text="Publications">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="488.0" prefWidth="771.0">
+                    <children>
+                        <TableView fx:id="publicationTableView" layoutX="44.0" layoutY="61.0" prefHeight="162.0" prefWidth="666.0">
+                            <columns>
+                                <TableColumn fx:id="colType" prefWidth="100.0" text="Type" />
+                                <TableColumn fx:id="colTitle" prefWidth="150.0" text="Title" />
+                                <TableColumn fx:id="colAuthor" prefWidth="150.0" text="Author" />
+                                <TableColumn fx:id="colPublisher" prefWidth="150.0" text="Publisher" />
+                                <TableColumn fx:id="colIsbn" prefWidth="150.0" text="ISBN" />
+                                <TableColumn fx:id="colYear" prefWidth="75.0" text="Year" />
+                            </columns>
                         </TableView>
-                     </children>
-                  </AnchorPane>
-              </content>
+                        <Label layoutX="263.0" layoutY="8.0" text="Publications">
+                            <font>
+                                <Font name="System Bold" size="36.0" />
+                            </font>
+                        </Label>
+                        <Button layoutX="228.0" layoutY="320.0" mnemonicParsing="false" onAction="#openCreateNewBookForm" prefHeight="25.0" prefWidth="268.0" text="Add Book" />
+                        <Button layoutX="228.0" layoutY="363.0" mnemonicParsing="false" onAction="#openCreateNewMangaForm" prefHeight="25.0" prefWidth="268.0" text="Add Manga" />
+                        <Button layoutX="228.0" layoutY="401.0" mnemonicParsing="false" onAction="#openCreateNewPeriodical" prefHeight="25.0" prefWidth="268.0" text="Add Periodical" />
+                        <Button layoutX="29.0" layoutY="232.0" mnemonicParsing="false" onAction="#updatePublication" prefHeight="25.0" prefWidth="159.0" text="Update Publication" />
+                        <Button layoutX="536.0" layoutY="232.0" mnemonicParsing="false" onAction="#deletePublication" prefHeight="25.0" prefWidth="159.0" text="Delete Publication" />
+                    </children>
+                </AnchorPane>
+            </Tab>
+            <Tab fx:id="myBooksTab" onSelectionChanged="#loadData" text="My Books">
+                <content>
+                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                        <children>
+                            <TableView fx:id="myBookList" layoutY="29.0" prefHeight="152.0" prefWidth="733.0">
+                                <columns>
+                                    <TableColumn fx:id="collBookId" prefWidth="51.0" text="Id" />
+                                    <TableColumn fx:id="colBookTitle" prefWidth="88.0" text="Title" />
+                                    <TableColumn fx:id="colRequestUser" prefWidth="98.0" text="User" />
+                                    <TableColumn fx:id="colRequestDate" prefWidth="126.0" text="Request Date" />
+                                    <TableColumn fx:id="colBookStatus" prefWidth="132.0" text="Status" />
+                                    <TableColumn fx:id="colHistory" prefWidth="104.0" text="History" />
+                                </columns>
+                            </TableView>
+                            <Label layoutX="14.0" layoutY="6.0" text="My owned books:" />
+                            <ListView layoutX="4.0" layoutY="238.0" prefHeight="196.0" prefWidth="726.0" />
+                            <Label layoutX="16.0" layoutY="212.0" text="Borrowed books:" />
+                            <Button layoutX="189.0" layoutY="187.0" mnemonicParsing="false" onAction="#updatePublication" text="Update publication" />
+                        <Button layoutX="329.0" layoutY="187.0" mnemonicParsing="false" onAction="#openCreateNewBookForm" prefHeight="25.0" prefWidth="111.0" text="Add Book" />
+                        <Button layoutX="453.0" layoutY="187.0" mnemonicParsing="false" onAction="#openCreateNewMangaForm" prefHeight="25.0" prefWidth="113.0" text="Add Manga" />
+                        <Button layoutX="587.0" layoutY="187.0" mnemonicParsing="false" onAction="#openCreateNewPeriodical" prefHeight="25.0" prefWidth="113.0" text="Add Periodical" />
+                        </children></AnchorPane>
+                </content>
             </Tab>
         </tabs>
       </TabPane>

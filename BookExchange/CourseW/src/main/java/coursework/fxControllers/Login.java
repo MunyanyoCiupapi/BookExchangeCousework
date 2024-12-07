@@ -9,7 +9,9 @@ import jakarta.persistence.Persistence;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -24,13 +26,12 @@ public class Login {
     CustomHibernate customHibernate = new CustomHibernate(entityManagerFactory);
 
     public void validateUser() throws IOException {
-
         User user = customHibernate.getUserByCredentials(userLogin.getText(), userPass.getText());
-        if(user != null)
-        {
+        if(user != null) {
             FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("main.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            //Po sios eilutes pasieksiu controlleri
+
+            // Pass the user to the main controller
             Main main = fxmlLoader.getController();
             main.setData(entityManagerFactory, user);
 
@@ -38,9 +39,11 @@ public class Login {
             stage.setTitle("Book Exchange");
             stage.setScene(scene);
             stage.show();
-        }else{
+        } else {
             FxUtils.generateAlert(Alert.AlertType.WARNING, "User Info", "Wrong Credentials");
         }
     }
+
+
 
 }

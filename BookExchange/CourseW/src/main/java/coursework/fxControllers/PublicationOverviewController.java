@@ -1,15 +1,23 @@
 package coursework.fxControllers;
 
+import coursework.StartGUI;
+import coursework.hibenateControllers.CustomHibernate;
 import coursework.hibenateControllers.GenericHibernate;
-import coursework.model.Book;
-import coursework.model.Manga;
-import coursework.model.Periodical;
-import coursework.model.Publication;
+import coursework.model.*;
+import jakarta.persistence.EntityManagerFactory;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+
+import java.io.IOException;
 
 public class PublicationOverviewController {
 
@@ -70,13 +78,26 @@ public class PublicationOverviewController {
 
 
     private Publication publicationToUpdate;
+    EntityManagerFactory entityManagerFactory;
     private GenericHibernate hibernate;
+    private User currentUser;
+    private Client targetUser;
 
 
-    public void setPublicationOverview(Publication publication, GenericHibernate hibernate) {
+
+    private void showAlert(Alert.AlertType type, String title, String headerText, String contentText) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
+    }
+
+    public void setPublicationOverview(Publication publication, GenericHibernate hibernate, User currentUser, Client client) {
         this.publicationToUpdate = publication;
         this.hibernate = hibernate;
-
+        this.currentUser = currentUser;
+        this.targetUser = client;
         initializeTitle(publication);
 
     }
@@ -141,6 +162,19 @@ public class PublicationOverviewController {
 
         }
 
+    }
+
+    public void loadReviewWindow() throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(StartGUI.class.getResource("userReview.fxml"));
+        Parent parent = fxmlLoader.load();
+        UserReview userReview = fxmlLoader.getController();
+        userReview.setData(entityManagerFactory, currentUser, targetUser);
+        Stage stage = new Stage();
+        Scene scene = new Scene(parent);
+        stage.setTitle("Book Exchange Test");
+        stage.setScene(scene);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
     }
 }
 

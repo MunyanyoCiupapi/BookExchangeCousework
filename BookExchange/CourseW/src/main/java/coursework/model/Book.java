@@ -31,17 +31,7 @@ public class Book extends Publication{
     private BookFormat format;
     private String summary;
 
-    public Book(int id, String title, String author, String publisher, String isbn, Genre genre, int pageCount, Language language, int publicationYear, BookFormat format, String summary) {
-        super(id, title, author);
-        this.publisher = publisher;
-        this.isbn = isbn;
-        this.genre = genre;
-        this.pageCount = pageCount;
-        this.language = language;
-        this.publicationYear = publicationYear;
-        this.format = format;
-        this.summary = summary;
-    }
+
 
     public Book(String publisher, String isbn, Genre genre, int pageCount, Language language, int publicationYear, BookFormat format, String summary) {
         this.publisher = publisher;
