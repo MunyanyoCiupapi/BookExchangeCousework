@@ -480,6 +480,7 @@ public class Main implements Initializable {
                     bookSummaryField.getText()
             );
             if(currentUser instanceof Client) newBook.setOwner((Client) currentUser);
+
             newBook.setPublicationStatus(PublicationStatus.AVAILABLE);
             hibernate.create(newBook);
             showAlert(Alert.AlertType.INFORMATION, "Success", null, "Book has been created successfully.");
